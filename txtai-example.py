@@ -21,7 +21,6 @@ documents = [
 # Index documents into txtai
 embeddings.index([(i, doc, None) for i, doc in enumerate(documents)])
 
-
 # Function to query txtai and use OpenAI for insights
 def query_txtai_with_openai(query):
     # Retrieve top 3 relevant results from txtai

@@ -1,2 +1,4 @@
 txtai
 openai
+sentence_transformers
+faiss-cpu
