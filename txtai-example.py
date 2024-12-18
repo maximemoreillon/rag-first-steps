@@ -1,22 +1,23 @@
 # Import required libraries
 from txtai.embeddings import Embeddings
 import openai
+from langchain_community.document_loaders import WikipediaLoader
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Initialize txtai embeddings
 embeddings = Embeddings()
 
-# Sample data to index
-documents = [
-  "Abbey's last name comes before Tonnie's alphabetically.",
-  "The 14 year old doesn't have the names Hannah, Ann, or Marino.",
-  "No one's first name starts with the same letter as her middle name.",
-  "Hannah is the oldest and has the shortest last name.",
-  "Kayla's last name starts with the same letter as her first.",
-  "Tonnie's middle name has the same number of letters as her first.",
-  "Kayla's and Abbey's middle names both start with vowels.",
-  "Tonnie isn't the youngest.",
 
-]
+
+articles = WikipediaLoader(query="Ethernet", load_max_docs=1, doc_content_chars_max=100000).load()
+text = articles[0].page_content
+
+# This chunking method is really simple and should be improved
+chunk_size = 1024
+documents = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+
 
 # Index documents into txtai
 embeddings.index([(i, doc, None) for i, doc in enumerate(documents)])
@@ -41,6 +42,6 @@ def query_txtai_with_openai(query):
     return response.choices[0].message.content
 
 # Example usage
-query = "Who is the youngest?"
+query = "Who invented Ethernet?"
 response = query_txtai_with_openai(query)
 print(response)
